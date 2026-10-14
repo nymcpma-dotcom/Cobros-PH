@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cobros PH – N&amp;M Consulting</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f6f5;--card:#fff;--tx:#1b2622;--mut:#66736e;--bd:#d9e0dd;--ac:#16735f;--acs:#d6ece6;--rd:#c8382f;--am:#b7791f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111614;--card:#19201d;--tx:#e6ece9;--mut:#93a39c;--bd:#2a3531;--ac:#4cc3a3;--acs:#1f3a33;--rd:#ff6b61;--am:#f0b450}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%}
+body{background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:8px 12px}
+.brand{font-weight:700;font-size:16px}
+nav{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+nav button{border:none;background:none;padding:6px 10px;border-radius:6px;color:var(--mut)}
+nav button.on{background:var(--acs);color:var(--tx);font-weight:600}
+.who{font-size:12px;color:var(--mut);display:flex;gap:8px;align-items:center}
+main{padding:10px 12px;max-width:1500px;margin:0 auto}
+h2{font-size:19px;margin:4px 0 10px}h3{font-size:15px;margin:0 0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px}
+.narrow{max-width:420px;margin:40px auto}
+.narrow label{display:block;margin:10px 0 3px;color:var(--mut);font-size:12px}.narrow input{width:100%}
+.mut{color:var(--mut)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px}
+.kpi b{display:block;font-size:20px}.kpi span{color:var(--mut);font-size:12px}
+.kpi.w b{color:var(--am)}.kpi.r b{color:var(--rd)}.kpi.g b{color:var(--ac)}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12px}
+.bar i{display:block;height:14px;background:var(--ac);border-radius:3px;min-width:1px}
+.bar.o i{background:var(--rd)}.bar em{font-style:normal;color:var(--mut);width:70px;flex:none}
+.flt{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:6px 9px;max-width:100%}
+button{cursor:pointer}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button:disabled{opacity:.5;cursor:wait}
+button.lnk{border:none;background:none;color:var(--ac);padding:6px 4px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+textarea{width:100%}
+.tw{overflow-x:auto;width:100%}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:5px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}
+td.n,th.n{text-align:right;white-space:nowrap}th{color:var(--mut);font-weight:600;font-size:12px}
+.r{color:var(--rd);font-weight:600}.am{color:var(--am);font-weight:600}.ok{color:var(--ac);font-weight:600}
+.sm{font-size:11px;color:var(--mut)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:10px}
+.mapg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.mapg label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:4px}.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.sw.t{background:var(--ac)}.sw.v{background:var(--rd)}
+dialog{max-height:92vh;overflow:auto;width:min(780px,94vw);background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px}
+dialog label{display:block;margin:8px 0 3px;color:var(--mut);font-size:12px}
+dialog input,dialog select{width:100%}
+#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;z-index:20;max-width:90vw}
+.hid{display:none!important}
+.chk{display:inline-flex;align-items:center;gap:4px;margin:2px 10px 2px 0;font-size:12px}
+.chk input{width:auto}
+@media print{header,.noprint,button{display:none!important}body{background:#fff;color:#000}.card,.kpi{border-color:#ccc;break-inside:avoid}main{max-width:none}}
+</style>
+</head>
+<body>
+<header id="top" class="hid">
+  <div class="brand">Cobros PH</div>
+  <nav id="tabs"></nav>
+  <div class="who"><span id="who"></span><button id="out">Salir</button></div>
+</header>
+<main id="view"><p class="mut">Cargando…</p></main>
+<dialog id="dlg"><div id="dlgc"></div></dialog>
+<div id="toast" class="hid"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ================= utilidades ================= */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const BK=['0-30','31-60','61-90','91-120','121-150','151-180','+180'];
+const bi=d=>d<=30?0:d<=60?1:d<=90?2:d<=120?3:d<=150?4:d<=180?5:6;
+const ST=['Aviso enviado','Contactado','Promesa de pago','Arreglo de pago','Pagó – por aplicar','No responde','Escalar a Junta / legal'];
+const PROM=['Promesa de pago','Arreglo de pago'];
+const ROL={admin:'Administrador',asistente:'Asistente',junta:'Junta Directiva',pendiente:'Pendiente'};
+const sp=x=>String(x??'').replace(/\s+/g,' ').trim();
+const nz=s=>sp(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function num(v){if(typeof v==='number')return v;let s=String(v??'').replace(/[$\s]/g,'');if(!s)return 0;const neg=/^\(.*\)$/.test(s)||/^-|-$/.test(s);s=s.replace(/[()\-]/g,'').replace(/,/g,'');const x=parseFloat(s);return isNaN(x)?0:(neg?-x:x)}
+const fmt=n=>(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const sg$=v=>(v>0.005?'+':v<-0.005?'-':'')+'$'+fmt(Math.abs(v));
+const pct=(a,b)=>b?(a/b*100).toFixed(1)+'%':'0%';
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+function pd(v){
+ if(v instanceof Date)return isNaN(v)?null:new Date(v.getFullYear(),v.getMonth(),v.getDate());
+ if(typeof v==='number')return v>20000&&v<80000?new Date(Math.round((v-25569)*864e5)+new Date().getTimezoneOffset()*6e4):null;
+ const s=sp(v);let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return new Date(+m[1],m[2]-1,+m[3]);
+ m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return new Date(y,m[2]-1,+m[1])}
+ return null}
+const fD=d=>{if(typeof d==='string')d=pd(d);return d?String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear():''};
+const fDT=t=>t?fD(new Date(t)):'';
+const dias=t=>Math.floor((Date.now()-new Date(t).getTime())/864e5);
+function msg(t){const e=$('#toast');e.textContent=t;e.classList.remove('hid');clearTimeout(msg.t);msg.t=setTimeout(()=>e.classList.add('hid'),4000)}
+const ls={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function openDlg(h){$('#dlgc').innerHTML=h;$('#dlg').showModal()}
+const closeDlg=()=>$('#dlg').close();
+const firma=()=>(window.CONFIG&&CONFIG.FIRMA)||'Administración';
+
+let K=ls.get('cphK',2);const od=r=>sum(r.b.slice(K));const dd=()=>[0,30,60,90][K];
+let sb=null,ME=null,PHS=[],PHID=null,TAB=null,PERF={},S={};
+const isStaff=()=>ME&&(ME.rol==='admin'||ME.rol==='asistente');
+const phName=id=>(PHS.find(p=>p.id==id)||{}).nombre||'PH';
+
+/* ================= datos ================= */
+async function all(mk){let out=[],from=0;for(;;){const {data,error}=await mk().range(from,from+999);if(error)throw error;out=out.concat(data);if(data.length<1000)break;from+=1000}return out}
+const toB=t=>(t||[]).map(Number).concat([0,0,0,0,0,0,0]).slice(0,7);
+const toRow=s=>({unidad:s.unidad,propietario:s.propietario||'',correo:s.correo||'',telefono:s.telefono||'',tot:+s.total,b:toB(s.tramos)});
+async function getCortes(ph){const {data,error}=await sb.from('cortes').select('*').eq('ph_id',ph).order('fecha');if(error)throw error;return data.map(c=>({...c,total:+c.total,b:toB(c.tramos)}))}
+async function getSaldos(cid){return (await all(()=>sb.from('saldos').select('unidad,propietario,correo,telefono,total,tramos').eq('corte_id',cid).order('id'))).map(toRow)}
+async function getGest(ph){return all(()=>{let q=sb.from('gestiones').select('*').order('creado',{ascending:false});if(ph!=='all')q=q.eq('ph_id',ph);return q})}
+function lastBy(G){const m={};G.forEach(x=>{const k=x.ph_id+'|'+x.unidad;if(!m[k])m[k]=x});return m}
+const autor=id=>{const p=PERF[id];return p?(p.nombre||p.email):'—'};
+const promVencida=(lg,r)=>lg&&PROM.includes(lg.estado)&&lg.fecha_promesa&&lg.fecha_promesa<today()&&od(r)>0.005;
+async function safe(fn){try{await fn()}catch(e){console.error(e);$('#view').innerHTML=`<div class="card"><b>No se pudieron cargar los datos.</b><p class="mut">${esc(e.message||e)}</p></div>`}}
+const loading=()=>$('#view').innerHTML='<p class="mut">Cargando…</p>';
+
+/* ================= piezas visuales ================= */
+const kpiHtml=items=>`<div class="kpis">${items.map(([a,b,c])=>`<div class="kpi ${c||''}"><b>${b}</b><span>${a}</span></div>`).join('')}</div>`;
+function agingHtml(L){const ag=BK.map((_,i)=>sum(L.map(r=>r.b[i]))),mx=Math.max(...ag.map(Math.abs),1);
+ return ag.map((v,i)=>`<div class="bar ${i>=K?'o':''}"><em>${BK[i]} d</em><i style="width:${Math.max(0,v)/mx*70}%"></i><span>$${fmt(v)}</span></div>`).join('')}
+const VBf=L=>{const v=BK.map((_,i)=>i).filter(i=>L.some(r=>Math.abs(r.b[i])>0.005));return v.length?v:[0]};
+const cel=(v,i)=>`<td class="n${i>=K&&v>0.005?' r':''}">${Math.abs(v)>0.005?fmt(v):'–'}</td>`;
+function chart(C){
+ if(C.length<2)return '<p class="mut">La evolución aparece cuando hay al menos dos cortes cargados.</p>';
+ const n=C.length,W=Math.max(340,n*76),Hh=200,top=16,base=Hh-34,mx=Math.max(...C.map(c=>c.total),1),step=(W-20)/n,bw=Math.min(44,step*.62);
+ const bars=C.map((c,i)=>{const x=10+i*step+(step-bw)/2,ht=c.total/mx*(base-top),hv=Math.max(0,od(c))/mx*(base-top);
+  return `<g><title>${fD(c.fecha)}: saldo $${fmt(c.total)}, vencido $${fmt(od(c))} (${pct(od(c),c.total)})</title>
+  <rect x="${x}" y="${base-ht}" width="${bw}" height="${ht}" rx="3" fill="var(--ac)" opacity=".35"/>
+  <rect x="${x+bw*.2}" y="${base-hv}" width="${bw*.6}" height="${hv}" rx="2" fill="var(--rd)"/>
+  <text x="${x+bw/2}" y="${base-ht-4}" text-anchor="middle" font-size="10" fill="var(--mut)">${pct(od(c),c.total)}</text>
+  <text x="${x+bw/2}" y="${base+14}" text-anchor="middle" font-size="10" fill="var(--mut)">${fD(c.fecha).slice(0,5)}</text>
+  <text x="${x+bw/2}" y="${base+26}" text-anchor="middle" font-size="9" fill="var(--mut)">${fD(c.fecha).slice(6)}</text></g>`}).join('');
+ return `<div class="tw"><svg viewBox="0 0 ${W} ${Hh}" width="${W}" height="${Hh}" role="img" aria-label="Evolución del saldo y lo vencido por corte"><line x1="8" x2="${W-8}" y1="${base}" y2="${base}" stroke="var(--bd)"/>${bars}</svg></div><div class="legend"><span><i class="sw t" style="opacity:.5"></i>Saldo total</span><span><i class="sw v"></i>Vencido +${dd()} d (el % encima de cada barra)</span></div>`}
+function phSel(allOpt){if(!allOpt&&PHID==='all')PHID=PHS[0]?.id;
+ return `<select id="cph">${allOpt?`<option value="all"${PHID==='all'?' selected':''}>Todas las PH</option>`:''}${PHS.map(p=>`<option value="${p.id}"${p.id==PHID?' selected':''}>${esc(p.nombre)}</option>`).join('')}</select>`}
+const kSel=()=>`<label>Vencido desde <select id="ck">${[1,2,3].map(i=>`<option value="${i}"${i===K?' selected':''}>${[0,31,61,91][i]} días</option>`).join('')}</select></label>`;
+function bindCtl(full,light){const a=$('#cph');if(a)a.onchange=()=>{PHID=a.value==='all'?'all':+a.value;full()};
+ const b=$('#ck');if(b)b.onchange=()=>{K=+b.value;ls.set('cphK',K);(light||full)()}}
+const noPH=()=>$('#view').innerHTML=`<div class="card"><h3>Todavía no hay PH registradas</h3><p class="mut">${isStaff()?'Ve a "Cargar reporte", sube el primer reporte de Sage y crea la PH en el mismo paso.':'El administrador aún no te ha asignado una PH.'}</p></div>`;
+
+/* ================= acceso ================= */
+function showLogin(){
+ $('#top').classList.add('hid');
+ $('#view').innerHTML=`<div class="card narrow"><h2>Cobros PH</h2><p class="mut" style="margin-top:-6px">${esc(firma())}</p>
+ <label>Correo<input id="lem" type="email" autocomplete="email"></label>
+ <label>Contraseña<input id="lpw" type="password" autocomplete="current-password"></label>
+ <div id="lnmw" class="hid"><label>Nombre completo<input id="lnm" autocomplete="name"></label></div>
+ <div class="flt" style="margin-top:12px"><button class="p" id="lin">Entrar</button><button id="lup">Crear cuenta</button><button class="lnk" id="lfg">Olvidé mi contraseña</button></div>
+ <p id="lmsg" class="mut"></p></div>`;
+ const em=()=>sp($('#lem').value),pw=()=>$('#lpw').value,say=t=>$('#lmsg').textContent=t;
+ $('#lpw').onkeydown=e=>{if(e.key==='Enter')$('#lin').click()};
+ $('#lin').onclick=async()=>{if(!em()||!pw())return say('Escribe tu correo y contraseña.');say('Entrando…');
+  const {data,error}=await sb.auth.signInWithPassword({email:em(),password:pw()});if(error)return say('No se pudo entrar: revisa el correo y la contraseña.');enter(data.user)};
+ $('#lup').onclick=async()=>{if($('#lnmw').classList.contains('hid')){$('#lnmw').classList.remove('hid');return say('Escribe tu nombre y una contraseña de al menos 6 caracteres, y pulsa "Crear cuenta" otra vez.')}
+  if(!em()||pw().length<6||!sp($('#lnm').value))return say('Completa correo, nombre y una contraseña de al menos 6 caracteres.');
+  say('Creando cuenta…');const {data,error}=await sb.auth.signUp({email:em(),password:pw(),options:{data:{nombre:sp($('#lnm').value)}}});
+  if(error)return say('No se pudo crear la cuenta: '+error.message);
+  if(data.session)enter(data.user);else say('Cuenta creada. Revisa tu correo para confirmarla y luego entra.')};
+ $('#lfg').onclick=async()=>{if(!em())return say('Escribe tu correo arriba y pulsa otra vez "Olvidé mi contraseña".');
+  const {error}=await sb.auth.resetPasswordForEmail(em(),{redirectTo:location.origin});say(error?'No se pudo enviar el correo: '+error.message:'Te enviamos un correo con el enlace para crear una nueva contraseña.')};
+}
+async function recover(){
+ openDlg(`<h3>Nueva contraseña</h3><label>Escribe tu nueva contraseña (mínimo 6 caracteres)<input id="npw" type="password"></label><div class="flt" style="margin-top:10px;justify-content:flex-end"><button class="p" id="nok">Guardar contraseña</button></div>`);
+ $('#nok').onclick=async()=>{const p=$('#npw').value;if(p.length<6)return msg('Mínimo 6 caracteres.');const {error}=await sb.auth.updateUser({password:p});if(error)return msg(error.message);closeDlg();msg('Contraseña actualizada.');start()};
+}
+async function enter(user){
+ loading();
+ const {data:p,error}=await sb.from('perfiles').select('*').eq('id',user.id).maybeSingle();
+ if(error||!p){$('#view').innerHTML=`<div class="card narrow"><h3>No se encontró tu perfil</h3><p class="mut">Verifica que el script de la base de datos se haya ejecutado completo antes de crear la cuenta.</p><button id="o2">Salir</button></div>`;$('#o2').onclick=logout;return}
+ ME=p;$('#top').classList.remove('hid');$('#who').textContent=(p.nombre||p.email)+' – '+ROL[p.rol];
+ if(p.rol==='pendiente'){$('#tabs').innerHTML='';$('#view').innerHTML=`<div class="card narrow"><h3>Tu cuenta está pendiente</h3><p class="mut">El administrador debe asignarte un rol (y tu PH si eres miembro de Junta). Cuando lo haga, vuelve a entrar.</p><button id="rl">Volver a revisar</button></div>`;$('#rl').onclick=()=>enter(user);return}
+ const {data:ph}=await sb.from('phs').select('*').order('nombre');PHS=ph||[];PHID=ME.rol==='admin'&&PHS.length>1?'all':(PHS[0]?.id??null);
+ if(isStaff()){const {data:pf}=await sb.from('perfiles').select('id,email,nombre,rol');PERF={};(pf||[]).forEach(x=>PERF[x.id]=x)}
+ const T=isStaff()?[['cobros','Cobros'],['cargar','Cargar reporte'],['seg','Seguimiento'],['comp','Comparativo'],['junta','Vista Junta']].concat(ME.rol==='admin'?[['usu','Usuarios']]:[]):[['junta','Mi PH']];
+ $('#tabs').innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('');
+ $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(b)go(b.dataset.t)};
+ go(isStaff()&&ME.rol==='admin'?'seg':T[0][0]);
+}
+async function logout(){await sb.auth.signOut();ME=null;showLogin()}
+function go(t){TAB=t;$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));window.scrollTo(0,0);
+ ({cobros:vCobros,cargar:vCargar,seg:vSeg,comp:vComp,junta:vJunta,usu:vUsu})[t]()}
+
+/* ================= COBROS (asistente / admin) ================= */
+async function vCobros(){if(!PHS.length)return noPH();loading();await safe(async()=>{
+ if(PHID==='all')PHID=PHS[0].id;
+ const C=await getCortes(PHID),last=C[C.length-1],L=last?await getSaldos(last.id):[],G=await getGest(PHID);
+ S={C,last,L,G,LG:lastBy(G)};
+ $('#view').innerHTML=`<div class="card flt noprint">${phSel(false)}${kSel()}<input id="q" placeholder="Buscar unidad o propietario"><select id="fs"><option value="">Todo el seguimiento</option><option value="_">Vencidos sin ninguna gestión</option><option value="15">Vencidos sin gestión en 15+ días</option><option value="pv">Promesas vencidas</option>${ST.map(s=>`<option>${s}</option>`).join('')}</select></div>
+ <p class="mut" style="margin:0 0 8px">${last?`Corte del ${fD(last.fecha)} · ${L.length} unidades con saldo`:'Esta PH todavía no tiene reportes cargados.'}</p>
+ <div id="ck2"></div><div class="card"><h3>Antigüedad de saldos</h3><div id="ag"></div></div>
+ <div class="card tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table><div id="more" class="mut" style="margin-top:8px"></div></div>`;
+ bindCtl(vCobros,rCobros);$('#q').oninput=rCobros;$('#fs').onchange=rCobros;
+ $('#tb').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=S.view[+b.dataset.i];b.dataset.k==='g'?dlgGest(r):dlgAviso(r)};
+ rCobros();
+})}
+function rCobros(){
+ const q=nz($('#q').value),f=$('#fs').value,lg=r=>S.LG[PHID+'|'+r.unidad];
+ const V=S.L.filter(r=>{if(q&&!nz(r.unidad+' '+r.propietario).includes(q))return false;const g=lg(r);
+  if(!f)return true;if(f==='_')return od(r)>0.005&&!g;if(f==='15')return od(r)>0.005&&(!g||dias(g.creado)>=15);if(f==='pv')return promVencida(g,r);return g&&g.estado===f}).sort((a,b)=>od(b)-od(a)||b.tot-a.tot);
+ S.view=V;
+ const tot=sum(V.map(r=>r.tot)),ov=sum(V.map(od)),o90=sum(V.map(r=>sum(r.b.slice(3)))),sin=V.filter(r=>od(r)>0.005&&(!lg(r)||dias(lg(r).creado)>=15)).length,pv=V.filter(r=>promVencida(lg(r),r)).length;
+ $('#ck2').innerHTML=kpiHtml([['Unidades con saldo',V.length],['Saldo por cobrar','$'+fmt(tot)],['Vencido (+'+dd()+' d)','$'+fmt(ov),'r'],['% morosidad',pct(ov,tot)],['Más de 90 días','$'+fmt(o90)],['Vencidos sin gestión 15+ días',sin,sin?'w':''],['Promesas vencidas',pv,pv?'r':'']])+'<div style="height:10px"></div>';
+ $('#ag').innerHTML=agingHtml(V);
+ const VB=VBf(S.L);
+ $('#th').innerHTML=`<tr><th>Unidad</th><th>Propietario</th><th class="n">Saldo</th>${VB.map(i=>`<th class="n">${BK[i]} d</th>`).join('')}<th class="n">Vencido</th><th>Última gestión</th><th class="noprint"></th></tr>`;
+ $('#tb').innerHTML=V.slice(0,400).map((r,i)=>{const g=lg(r);return `<tr><td><b>${esc(r.unidad)}</b></td><td>${esc(r.propietario)}</td><td class="n"><b>${fmt(r.tot)}</b></td>${VB.map(j=>cel(r.b[j],j)).join('')}<td class="n ${od(r)>0.005?'r':''}">${fmt(od(r))}</td>
+ <td>${g?`${esc(g.estado)}<div class="sm">${fDT(g.creado)} – ${esc(autor(g.user_id))}</div>${g.fecha_promesa?`<div class="sm ${promVencida(g,r)?'r':''}">Promesa: ${fD(g.fecha_promesa)}${g.monto_promesa?' por $'+fmt(g.monto_promesa):''}${promVencida(g,r)?' (vencida)':''}</div>`:''}`:(od(r)>0.005?'<span class="am">Sin gestión</span>':'<span class="sm">–</span>')}</td>
+ <td class="noprint" style="white-space:nowrap"><button data-k="g" data-i="${i}">Gestionar</button> <button data-k="a" data-i="${i}">Avisar</button></td></tr>`}).join('');
+ $('#tf').innerHTML=`<tr><td colspan="2"><b>TOTAL (${V.length})</b></td><td class="n"><b>${fmt(tot)}</b></td>${VB.map(j=>`<td class="n${j>=K?' r':''}"><b>${fmt(sum(V.map(r=>r.b[j])))}</b></td>`).join('')}<td class="n r"><b>${fmt(ov)}</b></td><td colspan="2"></td></tr>`;
+ $('#more').textContent=V.length>400?`Mostrando 400 de ${V.length}. Usa la búsqueda o los filtros.`:(V.length?'':'No hay unidades con estos filtros.');
+}
+async function addGest(row){const {data,error}=await sb.from('gestiones').insert({ph_id:PHID,...row}).select().single();if(error)throw error;S.G.unshift(data);S.LG=lastBy(S.G);return data}
+function dlgGest(r){
+ const H=S.G.filter(x=>x.unidad===r.unidad);
+ openDlg(`<h3>Unidad ${esc(r.unidad)} – ${esc(r.propietario)}</h3><p class="mut" style="margin:0">Saldo $${fmt(r.tot)} · vencido +${dd()} días $${fmt(od(r))}</p>
+ <div class="grid2" style="gap:0 12px"><div><label>Resultado de la gestión</label><select id="gst">${ST.map(s=>`<option>${s}</option>`).join('')}</select></div>
+ <div><label>Fecha de promesa o primer pago (opcional)</label><input id="gfp" type="date"></div>
+ <div><label>Monto prometido (opcional)</label><input id="gmp" type="number" step="0.01"></div></div>
+ <label>Nota</label><textarea id="gnt" rows="3" placeholder="Qué se habló, compromisos, próximos pasos…"></textarea>
+ <div class="flt" style="margin-top:10px;justify-content:flex-end"><button id="gcl">Cerrar</button><button class="p" id="gok">Guardar gestión</button></div>
+ <h3 style="margin-top:14px">Historial de esta unidad</h3>${H.length?`<div class="tw"><table><thead><tr><th>Fecha</th><th>Resultado</th><th>Promesa</th><th>Nota</th><th>Por</th></tr></thead><tbody>${H.map(x=>`<tr><td>${fDT(x.creado)}</td><td>${esc(x.estado)}</td><td>${x.fecha_promesa?fD(x.fecha_promesa)+(x.monto_promesa?' $'+fmt(x.monto_promesa):''):''}</td><td>${esc(x.nota||'')}</td><td>${esc(autor(x.user_id))}</td></tr>`).join('')}</tbody></table></div>`:'<p class="mut">Sin gestiones registradas.</p>'}`);
+ $('#gcl').onclick=closeDlg;
+ $('#gok').onclick=async e=>{e.target.disabled=true;try{await addGest({unidad:r.unidad,estado:$('#gst').value,nota:sp($('#gnt').value)||null,fecha_promesa:$('#gfp').value||null,monto_promesa:$('#gmp').value?num($('#gmp').value):null});closeDlg();rCobros();msg('Gestión guardada.')}catch(x){e.target.disabled=false;msg('No se pudo guardar: '+x.message)}};
+}
+function phone(r){let d=(r.telefono||'').split(/[\/,;]/)[0].replace(/\D/g,'').replace(/^00/,'');if(!d)return'';if(d.length<=8&&!d.startsWith('507'))d='507'+d;return d}
+function dlgAviso(r){
+ const ph=phName(PHID),det=BK.map((l,i)=>Math.abs(r.b[i])>0.005?`- ${l} días: $${fmt(r.b[i])}`:null).filter(Boolean).join('\n');
+ const body=`Estimado(a) ${r.propietario}:\n\nReciba un cordial saludo de parte de la Administración de ${ph}. Según nuestros registros al ${fD(S.last.fecha)}, la unidad ${r.unidad} mantiene un saldo pendiente de $${fmt(r.tot)} en cuotas de mantenimiento y otros cargos, de los cuales $${fmt(od(r))} tienen más de ${dd()} días.\n\nDetalle por antigüedad:\n${det}\n\nLe agradecemos ponerse al día a la brevedad o, si ya realizó el pago, enviarnos el comprobante para aplicarlo a su cuenta. Si necesita coordinar un arreglo de pago, con gusto le atendemos.\n\nSaludos cordiales,\n${firma()}`;
+ openDlg(`<h3>Aviso a ${esc(r.propietario)} – unidad ${esc(r.unidad)}</h3>
+ <label>Para</label><input id="ato" value="${esc(r.correo.replace(/\s+/g,'').replace(/[;,]+/g,','))}">
+ <label>Asunto</label><input id="asu" value="${esc(ph+' – Estado de cuenta unidad '+r.unidad)}">
+ <label>WhatsApp (con código de país; vacío para elegir el contacto)</label><input id="awa" inputmode="numeric" value="${phone(r)}">
+ <label>Mensaje</label><textarea id="abo" rows="14">${esc(body)}</textarea>
+ <p class="sm">Al enviar por correo o WhatsApp, queda registrado "Aviso enviado" en el seguimiento de la unidad.</p>
+ <div class="flt" style="justify-content:flex-end"><button id="acp">Copiar</button><button id="awb">WhatsApp</button><button class="p" id="amt">Abrir en correo</button><button id="acl">Cerrar</button></div>`);
+ const log=async via=>{try{await addGest({unidad:r.unidad,estado:'Aviso enviado',nota:'Enviado por '+via});rCobros()}catch(e){msg('El aviso se abrió, pero no se pudo registrar: '+e.message)}};
+ $('#acl').onclick=closeDlg;
+ $('#acp').onclick=()=>navigator.clipboard.writeText($('#abo').value).then(()=>msg('Mensaje copiado.')).catch(()=>msg('No se pudo copiar.'));
+ $('#awb').onclick=()=>{const u='https://wa.me/'+$('#awa').value.replace(/\D/g,'')+'?text='+encodeURIComponent($('#abo').value);if(!window.open(u,'_blank'))location.href=u;log('WhatsApp');closeDlg()};
+ $('#amt').onclick=()=>{const u='mailto:'+encodeURIComponent($('#ato').value).replace(/%2C/g,',').replace(/%40/g,'@')+'?subject='+encodeURIComponent($('#asu').value)+'&body='+encodeURIComponent($('#abo').value);log('correo');closeDlg();location.href=u};
+}
+
+/* ================= CARGAR REPORTE ================= */
+const FLD=[
+ ['unit','Unidad / Código *',['unidad','apto','apartamento','codigo','cod.','cuenta','customer id','account','id']],
+ ['name','Propietario *',['propietario','nombre','cliente','razon social','customer','owner','name']],
+ ['sal','Saldo pendiente *',['amount due','saldo','pendiente','balance','adeudado','por cobrar']],
+ ['mail','Correo',['correo','email','e-mail','mail']],
+ ['tel','Teléfono',['telefono','celular','movil','whatsapp','telephone','phone','mobile']],
+ ['doc','Documento / Factura',['documento','factura','referencia','invoice','reference','numero','no.']],
+ ['fv','Fecha de vencimiento',['vencimiento','vence','fecha venc','due date']],
+ ['fd','Fecha del documento',['fecha','=date','invoice date']],
+ ['dv','Días vencidos',['dias vencidos','dias de atraso','atraso','days overdue','days past due','=dias']],
+ ['b0','Columna 0-30 / corriente',['0-30','1-30','corriente','current','por vencer','no vencido']],
+ ['b1','Columna 31-60',['31-60']],
+ ['b2','Columna 61-90',['61-90']],
+ ['b3','Columna 91-120 (o "más de 90")',['91-120','+90','mas de 90','over 90','90+','>90']],
+ ['b4','Columna 121-150 (o "más de 120")',['121-150','+120','mas de 120','over 120','120+','>120']],
+ ['b5','Columna 151-180',['151-180']],
+ ['b6','Columna más de 180',['+180','mas de 180','over 180','180+','>180','181']]
+];
+const ORD=['mail','tel','fv','b6','b5','b4','b3','b2','b1','b0','dv','sal','doc','unit','name','fd'];
+const hit=(h,kw)=>{const c=h.replace(/\s/g,'');return kw.some(x=>x[0]==='='?h===x.slice(1):(h.includes(x)||c.includes(x.replace(/\s/g,''))))};
+let A=[],HI=0,H=[];
+function auto(H){const used=new Set(),M={};ORD.forEach(k=>{const kw=FLD.find(f=>f[0]===k)[2];const i=H.findIndex((h,j)=>!used.has(j)&&h&&h.length<45&&hit(h,kw));if(i>=0){used.add(i);M[k]=i}});return M}
+function vCargar(){
+ $('#view').innerHTML=`<div class="card"><h3>1. Reporte de Sage</h3><p class="mut" style="margin-top:0">Sube el Excel o CSV exportado de Sage (por ejemplo, la antigüedad de saldos por cliente), o copia las filas y pégalas abajo.</p>
+ <input type="file" id="file" accept=".xlsx,.xls,.csv,.txt,.tsv"><textarea id="paste" rows="3" style="margin-top:8px" placeholder="…o pega aquí las filas con sus encabezados"></textarea><div class="flt" style="margin-top:8px"><button id="go">Leer datos pegados</button></div></div>
+ <div class="card hid" id="mapc"><h3>2. Confirma las columnas</h3><p class="mut" style="margin-top:0">Corrige cualquier columna mal asignada. Se recuerda para la próxima carga con los mismos encabezados.</p><div id="map" class="mapg"></div></div>
+ <div class="card hid" id="dest"><h3>3. PH y fecha de corte</h3><div class="flt"><label>PH <select id="cphd">${PHS.map(p=>`<option value="${p.id}"${p.id==PHID?' selected':''}>${esc(p.nombre)}</option>`).join('')}<option value="new"${PHS.length?'':' selected'}>+ Nueva PH…</option></select></label>
+ <input id="cphn" placeholder="Nombre de la nueva PH" class="${PHS.length?'hid':''}"><label>Fecha de corte <input type="date" id="cfd" value="${today()}"></label></div>
+ <div id="prev" class="card" style="margin:10px 0 0;background:var(--bg)"></div>
+ <div class="flt" style="margin-top:10px"><button class="p" id="save">Guardar en la base</button></div></div>`;
+ $('#file').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{const wb=/\.xlsx?$/i.test(f.name)?XLSX.read(await f.arrayBuffer(),{cellDates:true}):XLSX.read(await f.text(),{type:'string',raw:true});startMap(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}))}
+  catch(x){msg('No se pudo leer el archivo. Exporta de nuevo como .xlsx o .csv.')}};
+ $('#go').onclick=()=>{const t=$('#paste').value;if(!t.trim())return msg('Pega primero las filas.');try{const wb=XLSX.read(t,{type:'string',raw:true});startMap(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}))}catch(e){msg('No se pudieron leer los datos pegados.')}};
+ $('#cphd').onchange=()=>$('#cphn').classList.toggle('hid',$('#cphd').value!=='new');
+ $('#cfd').onchange=preview;$('#save').onclick=saveCorte;
+}
+function startMap(aoa){
+ A=aoa.filter(r=>r.some(c=>sp(c)!==''));if(A.length<2)return msg('No se encontraron filas con datos.');
+ let best=0,bs=0;A.slice(0,40).forEach((r,i)=>{const sc=r.filter(c=>{const h=nz(c);return h&&h.length<45&&FLD.some(f=>hit(h,f[2]))}).length;if(sc>bs){bs=sc;best=i}});
+ HI=best;H=A[HI].map(nz);
+ const M=Object.assign(auto(H),ls.get('phMap2:'+H.join('|'),null)||{});
+ $('#map').innerHTML=FLD.map(([k,l])=>`<label>${l}<select data-k="${k}"><option value="-1">— no usar —</option>${A[HI].map((h,i)=>`<option value="${i}"${M[k]===i?' selected':''}>${esc(sp(h)||'(columna '+(i+1)+')')}</option>`).join('')}</select></label>`).join('');
+ $('#map').onchange=preview;
+ $('#mapc').classList.remove('hid');$('#dest').classList.remove('hid');preview();$('#mapc').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function getMap(){const M={};$$('#map select').forEach(s=>M[s.dataset.k]=+s.value);return M}
+function build(M){
+ const corte=pd($('#cfd').value)||pd(today()),g=(c,k)=>(M[k]??-1)>=0?c[M[k]]:'';
+ const useB=BK.some((_,i)=>(M['b'+i]??-1)>=0),hasDoc=M.doc>=0||M.fv>=0,seen=new Set(),map=new Map();let R=[],skip=0;
+ A.slice(HI+1).forEach(c=>{
+  const unit=sp(g(c,'unit'));if(!unit)return;
+  if(c.some(x=>typeof x==='string'&&nz(x).includes('total'))){skip++;return}
+  const bv=useB?BK.map((_,i)=>(M['b'+i]??-1)>=0?num(c[M['b'+i]]):0):null;
+  const s=M.sal>=0?num(g(c,'sal')):sum(bv||[]);if(!s)return;
+  const fv=pd(g(c,'fv')),fdc=pd(g(c,'fd'));let d=0;
+  if(fv)d=Math.round((corte-fv)/864e5);else if(M.dv>=0)d=num(g(c,'dv'));else if(fdc)d=Math.round((corte-fdc)/864e5);
+  const doc=sp(g(c,'doc'));
+  if(doc){const k=unit+'|'+doc+'|'+s+'|'+fD(fv);if(seen.has(k)){skip++;return}seen.add(k)}
+  R.push({c,unit,s,d,doc,fv,bv});
+ });
+ if(hasDoc){const wd=new Set(R.filter(x=>x.doc||x.fv).map(x=>x.unit));R=R.filter(x=>{if(x.doc||x.fv||!wd.has(x.unit))return true;skip++;return false})}
+ R.forEach(({c,unit,s,d,bv})=>{let r=map.get(unit);if(!r){r={unidad:unit,propietario:'',correo:'',telefono:'',tot:0,b:BK.map(()=>0)};map.set(unit,r)}
+  r.propietario=r.propietario||sp(g(c,'name'));r.correo=r.correo||sp(g(c,'mail'));r.telefono=r.telefono||sp(g(c,'tel'));
+  r.tot+=s;const bs=bv?sum(bv):0;
+  if(bv&&Math.abs(bs)>0.005){bv.forEach((v,i)=>r.b[i]+=v);if(Math.abs(s-bs)>0.005)r.b[bi(Math.max(0,d))]+=s-bs}else r.b[bi(Math.max(0,d))]+=s});
+ return {rows:[...map.values()].filter(r=>r.tot>0.005),used:R.length,skip};
+}
+function preview(){if(!A.length)return null;const M=getMap();
+ if(M.unit<0||M.name<0||(M.sal<0&&!BK.some((_,i)=>M['b'+i]>=0))){$('#prev').innerHTML='<span class="am">Indica al menos Unidad, Propietario y Saldo pendiente (o las columnas de antigüedad).</span>';return null}
+ const B=build(M),tr=BK.map((_,i)=>sum(B.rows.map(r=>r.b[i])));
+ $('#prev').innerHTML=`<b>${B.rows.length} unidades con saldo · total $${fmt(sum(B.rows.map(r=>r.tot)))}</b><div class="sm">${B.used} filas sumadas, ${B.skip} omitidas como subtotal o duplicado. Compara este total con el de Sage antes de guardar.</div><div class="sm" style="margin-top:4px">${BK.map((l,i)=>Math.abs(tr[i])>0.005?`${l}: $${fmt(tr[i])}`:'').filter(Boolean).join(' · ')}</div>`;
+ return B}
+async function saveCorte(e){
+ const B=preview();if(!B)return;if(!B.rows.length)return msg('No hay unidades con saldo para guardar.');
+ const fecha=$('#cfd').value;if(!fecha)return msg('Indica la fecha de corte.');
+ const btn=e.target;btn.disabled=true;btn.textContent='Guardando…';
+ try{
+  ls.set('phMap2:'+H.join('|'),getMap());
+  let ph=$('#cphd').value;
+  if(ph==='new'){const n=sp($('#cphn').value);if(!n)throw new Error('Escribe el nombre de la nueva PH.');
+   const ex=PHS.find(p=>nz(p.nombre)===nz(n));
+   if(ex)ph=ex.id;else{const {data,error}=await sb.from('phs').insert({nombre:n}).select().single();if(error)throw error;PHS.push(data);PHS.sort((a,b)=>a.nombre.localeCompare(b.nombre));ph=data.id}}
+  ph=+ph;
+  const {data:ex}=await sb.from('cortes').select('id').eq('ph_id',ph).eq('fecha',fecha).maybeSingle();
+  if(ex){if(!confirm(`Ya existe un corte de ${phName(ph)} con fecha ${fD(fecha)}. ¿Reemplazarlo con este reporte?`))throw new Error('Carga cancelada.');
+   const {error}=await sb.from('cortes').delete().eq('id',ex.id);if(error)throw error}
+  const tr=BK.map((_,i)=>sum(B.rows.map(r=>r.b[i])));
+  const {data:c,error:e1}=await sb.from('cortes').insert({ph_id:ph,fecha,unidades:B.rows.length,total:sum(B.rows.map(r=>r.tot)),tramos:tr,cargado_por:ME.id}).select().single();if(e1)throw e1;
+  for(let i=0;i<B.rows.length;i+=500){
+   const {error}=await sb.from('saldos').insert(B.rows.slice(i,i+500).map(r=>({corte_id:c.id,ph_id:ph,unidad:r.unidad,propietario:r.propietario,correo:r.correo,telefono:r.telefono,total:r.tot,tramos:r.b})));
+   if(error){await sb.from('cortes').delete().eq('id',c.id);throw error}}
+  msg(`Corte del ${fD(fecha)} guardado para ${phName(ph)}.`);PHID=ph;go('cobros');
+ }catch(x){btn.disabled=false;btn.textContent='Guardar en la base';msg(x.message||'No se pudo guardar.')}
+}
+
+/* ================= SEGUIMIENTO (administrador) ================= */
+async function vSeg(){if(!PHS.length)return noPH();loading();await safe(async()=>{
+ if(PHID==null)PHID='all';
+ const scope=PHID==='all'?PHS:PHS.filter(p=>p.id==PHID);
+ const D=await Promise.all(scope.map(async p=>{const C=await getCortes(p.id),last=C[C.length-1];return {p,last,L:last?await getSaldos(last.id):[]}}));
+ const G=await getGest(PHID),LG=lastBy(G);
+ S={D,G,LG};rSeg();
+})}
+function rSeg(){
+ const {D,G,LG}=S,multi=D.length>1;
+ const U=D.flatMap(({p,L})=>L.map(r=>({...r,ph:p,lg:LG[p.id+'|'+r.unidad]}))),V=U.filter(u=>od(u)>0.005);
+ const PV=V.filter(u=>promVencida(u.lg,u)).sort((a,b)=>od(b)-od(a));
+ const SC=V.filter(u=>!u.lg||dias(u.lg.creado)>=15).sort((a,b)=>od(b)-od(a));
+ const g7=G.filter(x=>dias(x.creado)<7).length,g30=G.filter(x=>dias(x.creado)<30);
+ const act={};g30.forEach(x=>{const a=act[x.user_id]=act[x.user_id]||{n:0,av:0,pr:0,u:new Set()};a.n++;a.u.add(x.ph_id+'|'+x.unidad);if(x.estado==='Aviso enviado')a.av++;if(PROM.includes(x.estado))a.pr++});
+ const phc=multi?'<th>PH</th>':'',phd=u=>multi?`<td>${esc(u.ph.nombre)}</td>`:'';
+ const sinCorte=D.filter(d=>!d.last).map(d=>d.p.nombre),viejo=D.filter(d=>d.last&&dias(d.last.fecha)>35).map(d=>`${d.p.nombre} (${fD(d.last.fecha)})`);
+ $('#view').innerHTML=`<div class="card flt noprint">${phSel(true)}${kSel()}<span class="mut">Seguimiento de la gestión de cobro</span></div>
+ ${sinCorte.length||viejo.length?`<div class="card"><span class="am">Atención:</span> ${sinCorte.length?'sin reportes cargados: '+esc(sinCorte.join(', '))+'. ':''}${viejo.length?'último corte con más de 35 días: '+esc(viejo.join(', '))+'.':''}</div>`:''}
+ ${kpiHtml([['Gestiones últimos 7 días',g7,'g'],['Unidades vencidas (+'+dd()+' d)',V.length],['Monto vencido','$'+fmt(sum(V.map(od))),'r'],['Gestionadas en los últimos 15 días',V.length-SC.length],['Sin gestión 15+ días',SC.length,SC.length?'w':''],['Promesas vencidas',PV.length,PV.length?'r':'']])}
+ <div style="height:10px"></div>
+ <div class="grid2">
+ <div class="card tw"><h3>Promesas de pago vencidas</h3>${PV.length?`<table><thead><tr>${phc}<th>Unidad</th><th>Propietario</th><th>Prometió</th><th class="n">Vencido hoy</th><th>Registró</th></tr></thead><tbody>${PV.map(u=>`<tr>${phd(u)}<td><b>${esc(u.unidad)}</b></td><td>${esc(u.propietario)}</td><td class="r">${fD(u.lg.fecha_promesa)}${u.lg.monto_promesa?'<div class="sm">$'+fmt(u.lg.monto_promesa)+'</div>':''}</td><td class="n">${fmt(od(u))}</td><td class="sm">${esc(autor(u.lg.user_id))}</td></tr>`).join('')}</tbody></table>`:'<p class="mut">No hay promesas vencidas.</p>'}</div>
+ <div class="card tw"><h3>Actividad del equipo (últimos 30 días)</h3>${Object.keys(act).length?`<table><thead><tr><th>Persona</th><th class="n">Gestiones</th><th class="n">Unidades</th><th class="n">Avisos</th><th class="n">Promesas</th></tr></thead><tbody>${Object.entries(act).sort((a,b)=>b[1].n-a[1].n).map(([id,a])=>`<tr><td>${esc(autor(id))}</td><td class="n">${a.n}</td><td class="n">${a.u.size}</td><td class="n">${a.av}</td><td class="n">${a.pr}</td></tr>`).join('')}</tbody></table>`:'<p class="mut">Sin gestiones en los últimos 30 días.</p>'}</div>
+ </div>
+ <div class="card tw"><h3>Vencidos sin gestión en 15+ días (${SC.length})</h3>${SC.length?`<table><thead><tr>${phc}<th>Unidad</th><th>Propietario</th><th class="n">Saldo</th><th class="n">Vencido</th><th class="n">+90 días</th><th>Última gestión</th></tr></thead><tbody>${SC.slice(0,200).map(u=>`<tr>${phd(u)}<td><b>${esc(u.unidad)}</b></td><td>${esc(u.propietario)}</td><td class="n">${fmt(u.tot)}</td><td class="n r">${fmt(od(u))}</td><td class="n">${fmt(sum(u.b.slice(3)))}</td><td>${u.lg?`${esc(u.lg.estado)}<div class="sm">hace ${dias(u.lg.creado)} días</div>`:'<span class="am">Nunca</span>'}</td></tr>`).join('')}</tbody></table>`:'<p class="mut">Todas las unidades vencidas tienen gestión reciente.</p>'}</div>
+ <div class="card tw"><h3>Bitácora de gestiones</h3>${G.length?`<table><thead><tr><th>Fecha</th>${phc}<th>Unidad</th><th>Resultado</th><th>Promesa</th><th>Nota</th><th>Por</th></tr></thead><tbody>${G.slice(0,150).map(x=>`<tr><td style="white-space:nowrap">${fDT(x.creado)}</td>${multi?`<td>${esc(phName(x.ph_id))}</td>`:''}<td><b>${esc(x.unidad)}</b></td><td>${esc(x.estado)}</td><td>${x.fecha_promesa?fD(x.fecha_promesa)+(x.monto_promesa?' $'+fmt(x.monto_promesa):''):''}</td><td>${esc(x.nota||'')}</td><td class="sm">${esc(autor(x.user_id))}</td></tr>`).join('')}</tbody></table>${G.length>150?`<p class="sm">Mostrando las 150 más recientes de ${G.length}.</p>`:''}`:'<p class="mut">Aún no hay gestiones registradas.</p>'}</div>`;
+ bindCtl(vSeg,rSeg);
+}
+
+/* ================= COMPARATIVO ================= */
+function cmpRows(La,Lb){const m=new Map();La.forEach(r=>m.set(r.unidad,{u:r.unidad,p:r.propietario,a:r.tot,b:0,oa:od(r),ob:0}));
+ Lb.forEach(r=>{const x=m.get(r.unidad)||{u:r.unidad,p:r.propietario,a:0,b:0,oa:0,ob:0};x.b=r.tot;x.ob=od(r);x.p=r.propietario||x.p;m.set(r.unidad,x)});
+ const R=[...m.values()];R.forEach(x=>{x.d=x.b-x.a;x.st=x.a<=0.005?'Nueva':x.b<=0.005?'Saldó':x.d<-0.005?'Abonó':x.d>0.005?'Aumentó':'Sin cambio'});
+ const T={a:sum(R.map(x=>x.a)),b:sum(R.map(x=>x.b)),oa:sum(R.map(x=>x.oa)),ob:sum(R.map(x=>x.ob)),c:sum(R.map(x=>Math.max(0,-x.d))),au:sum(R.map(x=>Math.max(0,x.d)))};return {R,T}}
+async function vComp(){if(!PHS.length)return noPH();loading();await safe(async()=>{
+ if(PHID==null)PHID='all';
+ if(PHID==='all'){
+  const D=await Promise.all(PHS.map(async p=>{const C=await getCortes(p.id);if(C.length<2)return {p,C};const A1=C[C.length-2],B1=C[C.length-1];return {p,C,A1,B1,...cmpRows(await getSaldos(A1.id),await getSaldos(B1.id))}}));
+  S={D};rCompAll();
+ }else{
+  const C=await getCortes(PHID);S={C,cache:{}};
+  S.ia=Math.max(0,C.length-2);S.ib=C.length-1;await rCompPH();
+ }
+})}
+function rCompAll(){
+ const D=S.D,ok=D.filter(d=>d.T),Tt=k=>sum(ok.map(d=>d.T[k]));
+ const tsv=[['PH','Corte anterior','Corte actual','Saldo anterior','Saldo actual','Cobro estimado','% recuperación','Vencido anterior','Vencido actual']].concat(ok.map(d=>[d.p.nombre,fD(d.A1.fecha),fD(d.B1.fecha),fmt(d.T.a),fmt(d.T.b),fmt(d.T.c),pct(d.T.c,d.T.a),fmt(d.T.oa),fmt(d.T.ob)]));
+ $('#view').innerHTML=`<div class="card flt noprint">${phSel(true)}${kSel()}<button id="cpy">Copiar tabla</button><span class="mut">Último corte contra el anterior de cada PH</span></div>
+ ${kpiHtml([['Cobro estimado (todas)','$'+fmt(Tt('c')),'g'],['% recuperación',pct(Tt('c'),Tt('a'))],['Saldo actual','$'+fmt(Tt('b'))],['Vencido actual (+'+dd()+' d)','$'+fmt(Tt('ob')),'r'],['Variación del vencido',sg$(Tt('ob')-Tt('oa')),Tt('ob')>Tt('oa')?'r':'g']])}<div style="height:10px"></div>
+ <div class="card tw"><table><thead><tr><th>PH</th><th>Cortes</th><th class="n">Saldo anterior</th><th class="n">Saldo actual</th><th class="n">Cobro estimado</th><th class="n">% recuperación</th><th class="n">Vencido anterior</th><th class="n">Vencido actual</th><th class="n">Variación vencido</th><th class="n">% morosidad</th></tr></thead><tbody>
+ ${D.map(d=>d.T?`<tr><td><b>${esc(d.p.nombre)}</b></td><td class="sm">${fD(d.A1.fecha)} → ${fD(d.B1.fecha)}</td><td class="n">${fmt(d.T.a)}</td><td class="n">${fmt(d.T.b)}</td><td class="n ok">${fmt(d.T.c)}</td><td class="n">${pct(d.T.c,d.T.a)}</td><td class="n">${fmt(d.T.oa)}</td><td class="n r">${fmt(d.T.ob)}</td><td class="n ${d.T.ob>d.T.oa?'r':'ok'}">${d.T.ob-d.T.oa>0?'+':''}${fmt(d.T.ob-d.T.oa)}</td><td class="n">${pct(d.T.ob,d.T.b)}</td></tr>`:`<tr><td><b>${esc(d.p.nombre)}</b></td><td colspan="9" class="mut">Se necesitan dos cortes para comparar (${d.C.length} cargado${d.C.length===1?'':'s'}).</td></tr>`).join('')}
+ ${ok.length>1?`<tr><td colspan="2"><b>TOTAL</b></td><td class="n"><b>${fmt(Tt('a'))}</b></td><td class="n"><b>${fmt(Tt('b'))}</b></td><td class="n ok"><b>${fmt(Tt('c'))}</b></td><td class="n"><b>${pct(Tt('c'),Tt('a'))}</b></td><td class="n"><b>${fmt(Tt('oa'))}</b></td><td class="n r"><b>${fmt(Tt('ob'))}</b></td><td></td><td class="n"><b>${pct(Tt('ob'),Tt('b'))}</b></td></tr>`:''}</tbody></table>
+ <p class="sm">Cobro estimado = suma de lo que bajó el saldo de cada unidad entre los dos cortes. Si una unidad pagó y en el mismo período se le cargó la cuota nueva, solo se refleja la diferencia; por eso es un mínimo.</p></div>`;
+ bindCtl(vComp,rCompAll);
+ $('#cpy').onclick=()=>navigator.clipboard.writeText(tsv.map(r=>r.join('\t')).join('\n')).then(()=>msg('Tabla copiada. Pégala en Excel o en un correo.')).catch(()=>msg('No se pudo copiar.'));
+}
+async function rCompPH(){
+ const C=S.C;
+ if(C.length<2){$('#view').innerHTML=`<div class="card flt noprint">${phSel(true)}${kSel()}</div><div class="card"><p class="mut">Esta PH tiene ${C.length} corte(s). Carga al menos dos reportes con fechas distintas para comparar.</p></div>`;bindCtl(vComp,rCompPH);return}
+ const ld=async i=>S.cache[C[i].id]||(S.cache[C[i].id]=await getSaldos(C[i].id));
+ const La=await ld(S.ia),Lb=await ld(S.ib),{R,T}=cmpRows(La,Lb);
+ const cnt=s=>R.filter(x=>x.st===s).length;
+ const opts=sel=>C.map((c,i)=>`<option value="${i}"${i===sel?' selected':''}>${fD(c.fecha)}</option>`).join('');
+ const ord=R.slice().sort((a,b)=>a.d-b.d);
+ const tsv=[['Unidad','Propietario','Saldo '+fD(C[S.ia].fecha),'Saldo '+fD(C[S.ib].fecha),'Diferencia','Resultado']].concat(ord.map(x=>[x.u,x.p,fmt(x.a),fmt(x.b),fmt(x.d),x.st]));
+ $('#view').innerHTML=`<div class="card flt noprint">${phSel(true)}${kSel()}<label>Comparar <select id="ca">${opts(S.ia)}</select></label><label>contra <select id="cb">${opts(S.ib)}</select></label><button id="cpy">Copiar detalle</button></div>
+ ${kpiHtml([['Cobro estimado','$'+fmt(T.c),'g'],['% recuperación',pct(T.c,T.a)],['Saldo '+fD(C[S.ia].fecha),'$'+fmt(T.a)],['Saldo '+fD(C[S.ib].fecha),'$'+fmt(T.b)],['Variación del vencido',sg$(T.ob-T.oa),T.ob>T.oa?'r':'g'],['Saldaron / abonaron',cnt('Saldó')+' / '+cnt('Abonó'),'g'],['Aumentaron',cnt('Aumentó'),cnt('Aumentó')?'w':'']])}<div style="height:10px"></div>
+ <div class="card"><h3>Evolución de ${esc(phName(PHID))}</h3>${chart(C)}</div>
+ <div class="card tw"><h3>Detalle por unidad</h3><table><thead><tr><th>Unidad</th><th>Propietario</th><th class="n">Saldo ${fD(C[S.ia].fecha)}</th><th class="n">Saldo ${fD(C[S.ib].fecha)}</th><th class="n">Diferencia</th><th class="n">Vencido actual</th><th>Resultado</th></tr></thead><tbody>
+ ${ord.map(x=>`<tr><td><b>${esc(x.u)}</b></td><td>${esc(x.p)}</td><td class="n">${fmt(x.a)}</td><td class="n">${fmt(x.b)}</td><td class="n ${x.d<-0.005?'ok':x.d>0.005?'r':''}">${x.d>0?'+':''}${fmt(x.d)}</td><td class="n">${fmt(x.ob)}</td><td class="${x.st==='Saldó'||x.st==='Abonó'?'ok':x.st==='Aumentó'?'r':''}">${x.st}</td></tr>`).join('')}</tbody></table>
+ <p class="sm">"Aumentó" incluye la cuota nueva del período: una unidad que pagó parte pero recibió la cuota del mes puede aparecer aquí.</p></div>`;
+ bindCtl(vComp,()=>rCompPH());
+ $('#ca').onchange=()=>{S.ia=+$('#ca').value;rCompPH()};$('#cb').onchange=()=>{S.ib=+$('#cb').value;rCompPH()};
+ $('#cpy').onclick=()=>navigator.clipboard.writeText(tsv.map(r=>r.join('\t')).join('\n')).then(()=>msg('Detalle copiado.')).catch(()=>msg('No se pudo copiar.'));
+}
+
+/* ================= DASHBOARD JUNTA DIRECTIVA ================= */
+async function vJunta(){if(!PHS.length)return noPH();loading();await safe(async()=>{
+ if(PHID==='all'||PHID==null)PHID=PHS[0].id;
+ const C=await getCortes(PHID),last=C[C.length-1],prev=C[C.length-2];
+ const L=last?await getSaldos(last.id):[],Lp=prev?await getSaldos(prev.id):null;
+ const {data:eg,error}=await sb.rpc('estado_gestion',{p:PHID});if(error)throw error;
+ const EG={};(eg||[]).forEach(x=>EG[x.unidad]=x);
+ S={C,last,prev,L,Lp,EG};rJunta();
+})}
+function rJunta(){
+ const {C,last,prev,L,Lp,EG}=S,ph=phName(PHID);
+ const head=`<div class="card flt noprint">${PHS.length>1?phSel(false):''}${kSel()}<button id="prt">Imprimir o guardar PDF</button></div>`;
+ if(!last){$('#view').innerHTML=head+`<div class="card"><h2>${esc(ph)}</h2><p class="mut">Aún no hay reportes de cuentas por cobrar para esta PH.</p></div>`;bindCtl(vJunta,rJunta);return}
+ const tot=sum(L.map(r=>r.tot)),ov=sum(L.map(od)),o90=sum(L.map(r=>sum(r.b.slice(3)))),M=L.filter(r=>od(r)>0.005).sort((a,b)=>od(b)-od(a));
+ const cp=Lp?cmpRows(Lp,L).T:null,VB=VBf(L);
+ const gs={};M.forEach(r=>{const s=EG[r.unidad]?.estado||'Sin gestión registrada';gs[s]=(gs[s]||0)+1});
+ $('#view').innerHTML=head+`<div class="card"><h2 style="margin-bottom:2px">${esc(ph)}</h2><p class="mut" style="margin:0">Cuentas por cobrar al ${fD(last.fecha)}${prev?` · comparado con el corte del ${fD(prev.fecha)}`:''} · ${esc(firma())}</p></div>
+ ${kpiHtml([['Saldo por cobrar','$'+fmt(tot)],['Vencido (+'+dd()+' d)','$'+fmt(ov),'r'],['% morosidad',pct(ov,tot)],['Más de 90 días','$'+fmt(o90)],['Unidades morosas',M.length+' de '+L.length+' con saldo'],cp?['Cobrado desde el corte anterior','$'+fmt(cp.c),'g']:['Cobrado desde el corte anterior','Requiere 2 cortes']])}<div style="height:10px"></div>
+ <div class="grid2"><div class="card"><h3>Antigüedad de saldos</h3>${agingHtml(L)}</div><div class="card"><h3>Evolución de la morosidad</h3>${chart(C)}</div></div>
+ <div class="card"><h3>Gestión de cobro de las unidades morosas</h3><div class="flt">${Object.entries(gs).sort((a,b)=>b[1]-a[1]).map(([s,n])=>`<span class="kpi" style="padding:6px 10px"><b style="font-size:16px;display:inline">${n}</b> <span>${esc(s)}</span></span>`).join('')||'<span class="mut">No hay unidades morosas.</span>'}</div></div>
+ <div class="card tw"><h3>Unidades morosas (${M.length})</h3>${M.length?`<table><thead><tr><th>Unidad</th><th>Propietario</th><th class="n">Saldo</th>${VB.map(i=>`<th class="n">${BK[i]} d</th>`).join('')}<th class="n">Vencido</th><th>Gestión</th></tr></thead><tbody>
+ ${M.map(r=>{const g=EG[r.unidad];return `<tr><td><b>${esc(r.unidad)}</b></td><td>${esc(r.propietario)}</td><td class="n">${fmt(r.tot)}</td>${VB.map(j=>cel(r.b[j],j)).join('')}<td class="n r">${fmt(od(r))}</td><td>${g?`${esc(g.estado)}<div class="sm">${fDT(g.fecha)}${g.fecha_promesa?' · promesa '+fD(g.fecha_promesa):''}</div>`:'<span class="sm">Sin gestión registrada</span>'}</td></tr>`}).join('')}
+ <tr><td colspan="2"><b>TOTAL</b></td><td class="n"><b>${fmt(sum(M.map(r=>r.tot)))}</b></td>${VB.map(j=>`<td class="n"><b>${fmt(sum(M.map(r=>r.b[j])))}</b></td>`).join('')}<td class="n r"><b>${fmt(sum(M.map(od)))}</b></td><td></td></tr></tbody></table>`:'<p class="mut">No hay unidades con saldo vencido.</p>'}</div>`;
+ bindCtl(vJunta,rJunta);$('#prt').onclick=()=>window.print();
+}
+
+/* ================= USUARIOS (solo administrador) ================= */
+async function vUsu(){loading();await safe(async()=>{
+ const {data:P,error}=await sb.from('perfiles').select('*').order('creado');if(error)throw error;
+ const {data:Acc,error:e2}=await sb.from('ph_acceso').select('*');if(e2)throw e2;
+ PERF={};P.forEach(x=>PERF[x.id]=x);
+ const has=(u,p)=>Acc.some(a=>a.user_id===u&&a.ph_id===p);
+ $('#view').innerHTML=`<div class="card"><h3>Usuarios</h3><p class="mut" style="margin-top:0">Cada persona entra a la app y pulsa "Crear cuenta". Aparece aquí como pendiente hasta que le asignes un rol. A los miembros de Junta márcales su PH: solo verán esa.</p>
+ <div class="tw"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>PH asignadas (Junta)</th></tr></thead><tbody>
+ ${P.map(u=>`<tr><td>${esc(u.nombre||'')}</td><td>${esc(u.email)}</td><td><select data-r="${u.id}"${u.id===ME.id?' disabled':''}>${Object.entries(ROL).map(([k,l])=>`<option value="${k}"${u.rol===k?' selected':''}>${l}</option>`).join('')}</select>${u.rol==='pendiente'?'<div class="sm am">Por aprobar</div>':''}</td>
+ <td>${u.rol==='junta'?(PHS.length?PHS.map(p=>`<label class="chk"><input type="checkbox" data-u="${u.id}" data-p="${p.id}"${has(u.id,p.id)?' checked':''}>${esc(p.nombre)}</label>`).join(''):'<span class="sm">No hay PH creadas</span>'):'<span class="sm">'+(u.rol==='admin'||u.rol==='asistente'?'Ve todas las PH':'–')+'</span>'}</td></tr>`).join('')}
+ </tbody></table></div></div>`;
+ $('#view').onchange=async e=>{const t=e.target;if(TAB!=='usu')return;
+  try{if(t.dataset.r){const {error}=await sb.from('perfiles').update({rol:t.value}).eq('id',t.dataset.r);if(error)throw error;msg('Rol actualizado.');vUsu()}
+   else if(t.dataset.u){const u=t.dataset.u,p=+t.dataset.p;const {error}=t.checked?await sb.from('ph_acceso').insert({user_id:u,ph_id:p}):await sb.from('ph_acceso').delete().eq('user_id',u).eq('ph_id',p);if(error)throw error;msg(t.checked?'PH asignada.':'PH retirada.')}}
+  catch(x){msg('No se pudo guardar: '+x.message);vUsu()}};
+})}
+
+/* ================= arranque ================= */
+async function start(){const {data:{session}}=await sb.auth.getSession();if(!session)return showLogin();enter(session.user)}
+$('#out').onclick=logout;
+if(!window.CONFIG||!CONFIG.SUPABASE_URL||/PEGA_AQUI/.test(CONFIG.SUPABASE_URL+CONFIG.SUPABASE_ANON_KEY)){
+ $('#view').innerHTML='<div class="card narrow"><h2>Falta la configuración</h2><p class="mut">Edita el archivo <b>config.js</b> con la Project URL y la clave de tu proyecto de Supabase (paso 3 de la guía).</p></div>';
+}else if(!window.supabase){
+ $('#view').innerHTML='<div class="card narrow"><h2>Sin conexión</h2><p class="mut">No se pudo cargar la librería de Supabase. Revisa tu conexión a internet y recarga la página.</p></div>';
+}else{
+ sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY);
+ sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')setTimeout(recover,0)});
+ start();
+}
+</script>
+</body>
+</html>
