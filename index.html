@@ -55,6 +55,11 @@ dialog input,dialog select{width:100%}
 .hid{display:none!important}
 .chk{display:inline-flex;align-items:center;gap:4px;margin:2px 10px 2px 0;font-size:12px}
 .chk input{width:auto}
+.chip{display:inline-block;padding:1px 9px;border-radius:10px;font-size:11.5px;background:var(--acs);color:var(--tx);font-weight:600}
+.chip.r{background:color-mix(in srgb,var(--rd) 16%,transparent);color:var(--rd)}.chip.am{background:color-mix(in srgb,var(--am) 18%,transparent);color:var(--am)}.chip.ok{background:var(--acs);color:var(--ac)}.chip.mut{background:var(--bd);color:var(--mut)}
+.opt{border:1px solid var(--bd);border-radius:8px;padding:10px;margin:8px 0}.opt.win{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+.prog{height:8px;background:var(--bd);border-radius:4px;overflow:hidden}.prog i{display:block;height:100%;background:var(--ac)}
+.vote label{display:flex;gap:8px;align-items:flex-start;padding:8px;border:1px solid var(--bd);border-radius:8px;margin:6px 0;cursor:pointer}.vote label:has(input:checked){border-color:var(--ac);background:var(--acs)}.vote input[type=radio]{width:auto;margin-top:3px}
 @media print{header,.noprint,button{display:none!important}body{background:#fff;color:#000}.card,.kpi{border-color:#ccc;break-inside:avoid}main{max-width:none}}
 </style>
 </head>
@@ -78,7 +83,7 @@ const BK=['0-30','31-60','61-90','91-120','121-150','151-180','+180'];
 const bi=d=>d<=30?0:d<=60?1:d<=90?2:d<=120?3:d<=150?4:d<=180?5:6;
 const ST=['Aviso enviado','Contactado','Promesa de pago','Arreglo de pago','Pagó – por aplicar','No responde','Escalar a Junta / legal'];
 const PROM=['Promesa de pago','Arreglo de pago'];
-const ROL={admin:'Administrador',asistente:'Asistente',junta:'Junta Directiva',pendiente:'Pendiente'};
+const ROL={admin:'Administrador',asistente:'Asistente / Secretaria',junta:'Junta Directiva',pendiente:'Pendiente'};
 const sp=x=>String(x??'').replace(/\s+/g,' ').trim();
 const nz=s=>sp(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -178,14 +183,15 @@ async function enter(user){
  if(p.rol==='pendiente'){$('#tabs').innerHTML='';$('#view').innerHTML=`<div class="card narrow"><h3>Tu cuenta está pendiente</h3><p class="mut">El administrador debe asignarte un rol (y tu PH si eres miembro de Junta). Cuando lo haga, vuelve a entrar.</p><button id="rl">Volver a revisar</button></div>`;$('#rl').onclick=()=>enter(user);return}
  const {data:ph}=await sb.from('phs').select('*').order('nombre');PHS=ph||[];PHID=ME.rol==='admin'&&PHS.length>1?'all':(PHS[0]?.id??null);
  if(isStaff()){const {data:pf}=await sb.from('perfiles').select('id,email,nombre,rol');PERF={};(pf||[]).forEach(x=>PERF[x.id]=x)}
- const T=isStaff()?[['cobros','Cobros'],['cargar','Cargar reporte'],['seg','Seguimiento'],['comp','Comparativo'],['junta','Vista Junta']].concat(ME.rol==='admin'?[['usu','Usuarios']]:[]):[['junta','Mi PH']];
+ const T=isStaff()?[['cobros','Cobros'],['cargar','Cargar reporte'],['seg','Seguimiento'],['comp','Comparativo'],['junta','Vista Junta'],['apr','Aprobaciones']].concat(ME.rol==='admin'?[['usu','Usuarios']]:[]):[['junta','Mi PH'],['apr','Aprobaciones']];
  $('#tabs').innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('');
- $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(b)go(b.dataset.t)};
- go(isStaff()&&ME.rol==='admin'?'seg':T[0][0]);
+ $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(b){if(b.dataset.t==='apr')APR.sel=null;go(b.dataset.t)}};
+ const hm=location.hash.match(/apr=(\d+)/);if(hm){APR.sel=+hm[1];history.replaceState(null,'',location.pathname+location.search);go('apr');return}
+ go(isStaff()&&ME.rol==='admin'?'seg':T[0][0]);aprBadge();
 }
 async function logout(){await sb.auth.signOut();ME=null;showLogin()}
 function go(t){TAB=t;$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));window.scrollTo(0,0);
- ({cobros:vCobros,cargar:vCargar,seg:vSeg,comp:vComp,junta:vJunta,usu:vUsu})[t]()}
+ ({cobros:vCobros,cargar:vCargar,seg:vSeg,comp:vComp,junta:vJunta,apr:vApr,usu:vUsu})[t]()}
 
 /* ================= COBROS (asistente / admin) ================= */
 async function vCobros(){if(!PHS.length)return noPH();loading();await safe(async()=>{
@@ -463,6 +469,178 @@ async function vUsu(){loading();await safe(async()=>{
    else if(t.dataset.u){const u=t.dataset.u,p=+t.dataset.p;const {error}=t.checked?await sb.from('ph_acceso').insert({user_id:u,ph_id:p}):await sb.from('ph_acceso').delete().eq('user_id',u).eq('ph_id',p);if(error)throw error;msg(t.checked?'PH asignada.':'PH retirada.')}}
   catch(x){msg('No se pudo guardar: '+x.message);vUsu()}};
 })}
+
+/* ================= APROBACIONES DE JUNTA ================= */
+const AE={borrador:['Borrador','mut'],abierta:['En votación','am'],aprobada:['Aprobada','ok'],rechazada:['Rechazada','r'],devuelta:['Devuelta: piden cambios','am'],sin_acuerdo:['Sin acuerdo','r'],vencida:['Vencida','r'],anulada:['Anulada','mut']};
+const VT={opcion:'Aprueba',rechazo:'Rechaza todas',cambios:'Pide más cotizaciones o cambios'};
+const ABRIBLE=['devuelta','rechazada','sin_acuerdo','vencida'];
+let APR={sel:null,f:'act',ph:'all'};
+const chip=e=>`<span class="chip ${(AE[e]||[])[1]||''}">${esc((AE[e]||[e])[0])}</span>`;
+const aUrl=id=>location.origin+location.pathname+'#apr='+id;
+const money=m=>m==null||m===''?'':'B/.'+fmt(m);
+const slug=s=>nz(s).replace(/[^a-z0-9.]+/g,'-').replace(/^-+|-+$/g,'').slice(-60)||'archivo';
+const LET='ABCDEFGHIJ';
+async function upFile(ph,sid,f){const path=`${ph}/${sid}/${Date.now()}_${slug(f.name)}`;
+ const {error}=await sb.storage.from('aprobaciones').upload(path,f,{contentType:f.type||undefined,upsert:false});if(error)throw error;return path}
+async function signed(path){const {data,error}=await sb.storage.from('aprobaciones').createSignedUrl(path,3600);if(error)throw error;return data.signedUrl}
+async function openFile(path){const w=window.open('','_blank');try{const u=await signed(path);if(w)w.location=u;else location.href=u}catch(e){if(w)w.close();msg('No se pudo abrir el archivo: '+e.message)}}
+function plazo(s){if(s.estado!=='abierta'||!s.vence)return s.cerrada_en?'Cerrada el '+fDT(s.cerrada_en):'';
+ const d=Math.ceil((new Date(s.vence)-Date.now())/864e5);return d<=0?'<span class="r">Vence hoy</span>':(d<=3?'<span class="am">':'<span>')+`Vence en ${d} día${d===1?'':'s'} (${fDT(s.vence)})</span>`}
+const quien=id=>!id?'Sistema':(id===ME.id?'Tú':(PERF[id]?(PERF[id].nombre||PERF[id].email):'Miembro de Junta'));
+
+async function aprBadge(){if(!ME||ME.rol!=='junta')return;try{
+ const {data:S}=await sb.from('solicitudes').select('id,ronda').eq('estado','abierta');const {data:V}=await sb.from('votos').select('solicitud_id,ronda');
+ const vs=new Set((V||[]).map(v=>v.solicitud_id+'|'+v.ronda)),n=(S||[]).filter(s=>!vs.has(s.id+'|'+s.ronda)).length;
+ const b=$('#tabs button[data-t="apr"]');if(b)b.textContent='Aprobaciones'+(n?` (${n})`:'')}catch(e){}}
+
+async function vApr(){if(APR.sel)return vAprDet(APR.sel);loading();await safe(async()=>{
+ const {data:L,error}=await sb.from('solicitudes').select('*').order('creado',{ascending:false});if(error)throw error;
+ let vs=new Set();if(ME.rol==='junta'){const {data:V}=await sb.from('votos').select('solicitud_id,ronda');vs=new Set((V||[]).map(v=>v.solicitud_id+'|'+v.ronda))}
+ const pend=s=>ME.rol==='junta'&&s.estado==='abierta'&&!vs.has(s.id+'|'+s.ronda);
+ $('#view').innerHTML=`<div class="card flt noprint">
+  <select id="af"><option value="act">Activas (en votación y borradores)</option><option value="cer">Cerradas</option><option value="all">Todas</option></select>
+  ${PHS.length>1?`<select id="aph"><option value="all">Todas las PH</option>${PHS.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}</select>`:''}
+  <span style="flex:1"></span>${isStaff()?'<button class="p" id="anew">+ Nueva solicitud</button>':''}</div>
+  <div class="card tw"><table><thead><tr><th>Fecha</th><th>PH</th><th>Solicitud</th><th>Estado</th><th>Plazo</th>${ME.rol==='junta'?'<th>Tu voto</th>':'<th>Creada por</th>'}</tr></thead><tbody id="atb"></tbody></table><p id="aem" class="mut"></p></div>`;
+ $('#af').value=APR.f;if($('#aph'))$('#aph').value=APR.ph;
+ const draw=()=>{APR.f=$('#af').value;APR.ph=$('#aph')?$('#aph').value:'all';
+  const R=(L||[]).filter(s=>(APR.f==='all'||(APR.f==='act'?['abierta','borrador'].includes(s.estado):!['abierta','borrador'].includes(s.estado)))&&(APR.ph==='all'||s.ph_id==APR.ph));
+  $('#atb').innerHTML=R.map(s=>`<tr data-id="${s.id}" style="cursor:pointer"><td>${fDT(s.creado)}</td><td>${esc(phName(s.ph_id))}</td><td><b>${esc(s.titulo)}</b>${s.ronda>1?` <span class="sm">· ronda ${s.ronda}</span>`:''}</td><td>${chip(s.estado)}</td><td class="sm">${plazo(s)}</td>
+   <td>${ME.rol==='junta'?(s.estado!=='abierta'?'<span class="sm">–</span>':pend(s)?'<span class="am">Pendiente</span>':'<span class="ok">Votaste</span>'):esc(quien(s.creado_por))}</td></tr>`).join('');
+  $('#aem').textContent=R.length?'':(L&&L.length?'No hay solicitudes con este filtro.':(isStaff()?'Todavía no hay solicitudes. Pulsa "+ Nueva solicitud" para crear la primera.':'No hay solicitudes de aprobación para tu PH.'))};
+ draw();$('#af').onchange=draw;if($('#aph'))$('#aph').onchange=draw;
+ $('#atb').onclick=e=>{const tr=e.target.closest('tr[data-id]');if(tr){APR.sel=+tr.dataset.id;vAprDet(APR.sel)}};
+ if($('#anew'))$('#anew').onclick=()=>dlgApr();
+ aprBadge();
+})}
+
+async function vAprDet(id){loading();await safe(async()=>{
+ const {data:s,error}=await sb.from('solicitudes').select('*').eq('id',id).maybeSingle();if(error)throw error;
+ if(!s){APR.sel=null;$('#view').innerHTML='<div class="card"><h3>Solicitud no disponible</h3><p class="mut">No existe o no tienes acceso a ella.</p><button id="aback">← Volver</button></div>';$('#aback').onclick=()=>{APR.sel=null;vApr()};return}
+ const [{data:O},{data:C},{data:E},{data:D},{data:MV}]=await Promise.all([
+  sb.from('opciones').select('*').eq('solicitud_id',id).order('ronda').order('letra'),
+  sb.rpc('apr_conteo',{sid:id}),sb.from('eventos_apr').select('*').eq('solicitud_id',id).order('creado'),
+  sb.rpc('apr_votos_detalle',{sid:id}),sb.from('votos').select('*').eq('solicitud_id',id).eq('ronda',s.ronda).eq('user_id',ME.id).maybeSingle()]);
+ const M=isStaff()?((await sb.rpc('apr_miembros',{sid:id})).data||[]):[];
+ const cur=(O||[]).filter(o=>o.ronda===s.ronda),old=(O||[]).filter(o=>o.ronda<s.ronda);
+ const cnt=(C||[]).filter(c=>c.voto),miembros=+((C||[])[0]||{}).miembros||0,nec=+((C||[])[0]||{}).necesarios||3,votaron=sum(cnt.map(c=>+c.votos));
+ const nv=(v,op)=>+((cnt.find(c=>c.voto===v&&(v!=='opcion'||c.opcion_id==op))||{}).votos||0);
+ const puedeVotar=ME.rol==='junta'&&s.estado==='abierta';
+ const opName=oid=>{const o=(O||[]).find(x=>x.id==oid);return o?`Opción ${o.letra} – ${o.proveedor}`:'Opción'};
+ const bar=n=>`<div class="prog" title="${n} de ${nec} votos"><i style="width:${Math.min(100,n/nec*100)}%"></i></div><div class="sm">${n} de ${nec} votos</div>`;
+ const optHtml=o=>`<div class="opt${s.opcion_ganadora==o.id?' win':''}"><div class="flt" style="justify-content:space-between"><div><b>Opción ${esc(o.letra)} – ${esc(o.proveedor)}</b>${o.monto!=null?` · <b>${money(o.monto)}</b>`:''}${s.opcion_ganadora==o.id?' <span class="chip ok">Aprobada</span>':''}</div>
+  ${o.pdf_path?`<button data-f="${esc(o.pdf_path)}">📄 Ver cotización</button>`:'<span class="sm">Sin PDF</span>'}</div>${o.detalle?`<p class="mut" style="margin:6px 0 0">${esc(o.detalle)}</p>`:''}
+  ${['abierta','aprobada'].includes(s.estado)||s.estado!=='borrador'?`<div style="margin-top:8px;max-width:260px">${bar(nv('opcion',o.id))}</div>`:''}</div>`;
+ const hist=(D||[]).filter(d=>d.ronda<s.ronda||s.estado!=='abierta'||isStaff());
+ $('#view').innerHTML=`<div class="noprint" style="margin-bottom:8px"><button class="lnk" id="aback">← Volver a la lista</button></div>
+ <div class="card"><div class="flt" style="justify-content:space-between;align-items:flex-start"><div><div class="sm">${esc(phName(s.ph_id))} · Solicitud #${s.id}${s.ronda>1?' · Ronda '+s.ronda:''} · creada el ${fDT(s.creado)}${isStaff()?' por '+esc(quien(s.creado_por)):''}</div>
+  <h2 style="margin:4px 0">${esc(s.titulo)}</h2><div class="flt">${chip(s.estado)}<span class="sm">${plazo(s)}</span></div></div>
+  <div class="flt noprint">${s.estado!=='borrador'?'<button id="awa">💬 Compartir por WhatsApp</button>':''}${isStaff()&&s.estado==='abierta'?'<button id="aml">✉️ Correo a quienes faltan</button>':''}<button id="aln">🔗 Copiar enlace</button></div></div>
+  ${s.descripcion?`<p style="white-space:pre-wrap;margin:10px 0 0">${esc(s.descripcion)}</p>`:''}
+  ${s.estado==='abierta'?`<div style="margin-top:10px"><b>${votaron}</b> de ${miembros} miembros han votado · se aprueba con <b>${nec}</b> votos iguales${miembros<nec?` <div class="r" style="margin-top:4px">Atención: esta PH tiene ${miembros} miembro(s) de Junta asignados y se necesitan ${nec}. Asígnalos en Usuarios.</div>`:''}</div>`:''}
+  ${s.estado==='aprobada'?`<p class="ok" style="margin:10px 0 0">Aprobada: ${esc(opName(s.opcion_ganadora))}</p>`:''}</div>
+ ${s.comparativo_path?`<div class="card"><div class="flt" style="justify-content:space-between"><h3 style="margin:0">Cuadro comparativo</h3><div class="flt"><button id="acv">📊 Ver aquí</button><button data-f="${esc(s.comparativo_path)}">⬇️ Descargar</button></div></div><div class="sm">${esc(s.comparativo_nombre||'')}</div><div id="acmp" class="tw" style="margin-top:8px"></div></div>`:''}
+ <div class="card"><h3>Opciones${s.ronda>1?' (ronda '+s.ronda+')':''}</h3>${cur.map(optHtml).join('')||'<p class="mut">Sin opciones.</p>'}
+  ${s.estado!=='borrador'?`<div class="flt sm" style="gap:16px;margin-top:6px"><span>Rechazan todas: <b>${nv('rechazo')}</b></span><span>Piden cambios: <b>${nv('cambios')}</b></span></div>`:''}</div>
+ ${puedeVotar?`<div class="card vote"><h3>${MV?'Tu voto (puedes cambiarlo mientras siga abierta)':'Tu voto'}</h3>
+  ${cur.map(o=>`<label><input type="radio" name="vt" value="o${o.id}"${MV&&MV.voto==='opcion'&&MV.opcion_id==o.id?' checked':''}><span>Apruebo la <b>Opción ${esc(o.letra)}</b> – ${esc(o.proveedor)} ${money(o.monto)}</span></label>`).join('')}
+  <label><input type="radio" name="vt" value="rechazo"${MV&&MV.voto==='rechazo'?' checked':''}><span>❌ Rechazo todas las opciones</span></label>
+  <label><input type="radio" name="vt" value="cambios"${MV&&MV.voto==='cambios'?' checked':''}><span>🔄 Pido más cotizaciones o cambios</span></label>
+  <textarea id="vcm" rows="2" placeholder="Comentario (opcional)" style="margin-top:6px">${esc(MV?MV.comentario||'':'')}</textarea>
+  <div class="flt" style="margin-top:8px"><button class="p" id="vok">${MV?'Cambiar mi voto':'Enviar mi voto'}</button>${MV?`<span class="sm">Votaste el ${fDT(MV.actualizado)}</span>`:''}</div></div>`:
+  (ME.rol==='junta'&&MV?`<div class="card"><h3>Tu voto</h3><p>${MV.voto==='opcion'?esc(opName(MV.opcion_id)):VT[MV.voto]}${MV.comentario?` <span class="mut">– ${esc(MV.comentario)}</span>`:''}</p></div>`:'')}
+ ${isStaff()?`<div class="card noprint"><h3>Acciones</h3><div class="flt">
+  ${s.estado==='borrador'?'<button class="p" id="apub">Enviar a la Junta</button><button id="adel">Eliminar borrador</button>':''}
+  ${ABRIBLE.includes(s.estado)?'<button class="p" id="area">Reabrir con nuevas cotizaciones</button>':''}
+  ${['abierta','borrador'].includes(s.estado)?'<button id="aanu">Anular solicitud</button>':''}
+  ${!['borrador','abierta'].concat(ABRIBLE).includes(s.estado)?'<span class="mut">Esta solicitud está cerrada.</span>':''}</div></div>
+  <div class="card"><h3>Miembros de la Junta (${M.length})</h3>${M.length?`<div class="tw"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Voto de esta ronda</th></tr></thead><tbody>
+  ${M.map(m=>`<tr><td>${esc(m.nombre||'')}</td><td>${esc(m.email||'')}</td><td>${m.voto?(m.voto==='opcion'?esc(opName(m.opcion_id)):VT[m.voto])+` <span class="sm">${fDT(m.actualizado)}</span>`:(s.estado==='abierta'?'<span class="am">Pendiente</span>':'<span class="sm">No votó</span>')}</td></tr>`).join('')}</tbody></table></div>`:'<p class="mut">Esta PH no tiene miembros de Junta asignados. Asígnalos en la pestaña Usuarios.</p>'}</div>`:''}
+ ${hist.length?`<div class="card"><h3>Votos registrados</h3><div class="tw"><table><thead><tr><th>Ronda</th><th>Miembro</th><th>Voto</th><th>Comentario</th><th>Fecha</th></tr></thead><tbody>
+  ${hist.map(d=>`<tr><td>${d.ronda}</td><td>${esc(d.nombre)}</td><td>${d.voto==='opcion'?esc(opName(d.opcion_id)):VT[d.voto]}</td><td>${esc(d.comentario||'')}</td><td>${fDT(d.actualizado)}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+ ${old.length?`<div class="card"><h3>Opciones de rondas anteriores</h3>${old.map(o=>`<div class="sm" style="margin:4px 0">Ronda ${o.ronda} · <b>Opción ${esc(o.letra)}</b> – ${esc(o.proveedor)} ${money(o.monto)} ${o.pdf_path?`<button class="lnk" data-f="${esc(o.pdf_path)}">Ver PDF</button>`:''}</div>`).join('')}</div>`:''}
+ <div class="card"><h3>Bitácora</h3>${(E||[]).map(e=>`<div class="sm" style="margin:3px 0"><b>${fDT(e.creado)} ${new Date(e.creado).toLocaleTimeString('es-PA',{hour:'2-digit',minute:'2-digit'})}</b> · ${esc(isStaff()||e.user_id===ME.id||!e.user_id?quien(e.user_id):(['voto','cambio de voto'].includes(e.tipo)?'Miembro de Junta':'Administración'))} · ${esc(e.tipo)}${e.detalle?': '+esc(AE[e.detalle]?AE[e.detalle][0]:e.detalle):''}</div>`).join('')||'<p class="mut">Sin movimientos.</p>'}</div>`;
+
+ $('#aback').onclick=()=>{APR.sel=null;vApr()};
+ $('#view').querySelectorAll('button[data-f]').forEach(b=>b.onclick=()=>openFile(b.dataset.f));
+ if($('#acv'))$('#acv').onclick=()=>verComparativo(s);
+ $('#aln').onclick=async()=>{try{await navigator.clipboard.writeText(aUrl(s.id));msg('Enlace copiado.')}catch(e){prompt('Copia este enlace:',aUrl(s.id))}};
+ if($('#awa'))$('#awa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(waText(s,cur,O)),'_blank');
+ if($('#aml'))$('#aml').onclick=()=>{const to=M.filter(m=>!m.voto&&m.email).map(m=>m.email);if(!to.length)return msg('Todos los miembros ya votaron.');
+  location.href=`mailto:?bcc=${encodeURIComponent(to.join(','))}&subject=${encodeURIComponent('Aprobación pendiente – '+phName(s.ph_id)+': '+s.titulo)}&body=${encodeURIComponent(waText(s,cur,O).replace(/\*/g,'')+'\n\n'+firma())}`};
+ if($('#vok'))$('#vok').onclick=async()=>{const r=document.querySelector('input[name="vt"]:checked');if(!r)return msg('Elige una opción para votar.');
+  const v=r.value.startsWith('o')?{voto:'opcion',opcion_id:+r.value.slice(1)}:{voto:r.value,opcion_id:null};
+  $('#vok').disabled=true;const {error}=await sb.from('votos').upsert({solicitud_id:s.id,ronda:s.ronda,...v,comentario:sp($('#vcm').value)||null},{onConflict:'solicitud_id,ronda,user_id'});
+  if(error){$('#vok').disabled=false;return msg('No se pudo guardar el voto: '+error.message)}msg('¡Voto registrado!');vAprDet(s.id);aprBadge()};
+ const act=async(fn,ok)=>{try{const {error}=await fn();if(error)throw error;msg(ok);await vAprDet(s.id);return true}catch(e){msg('No se pudo: '+e.message);return false}};
+ if($('#apub'))$('#apub').onclick=()=>{if(confirm('¿Enviar esta solicitud a la Junta? Recibirán el aviso por correo y empieza el plazo de votación.'))act(()=>sb.rpc('apr_publicar',{sid:s.id}),'Solicitud enviada a la Junta.').then(ok=>{if(ok)shareAfter(s.id)})};
+ if($('#adel'))$('#adel').onclick=async()=>{if(!confirm('¿Eliminar este borrador?'))return;const {error}=await sb.from('solicitudes').delete().eq('id',s.id);if(error)return msg(error.message);APR.sel=null;msg('Borrador eliminado.');vApr()};
+ if($('#aanu'))$('#aanu').onclick=()=>{const m=prompt('Motivo de la anulación (opcional):');if(m===null)return;act(()=>sb.rpc('apr_anular',{sid:s.id,motivo:m}),'Solicitud anulada.')};
+ if($('#area'))$('#area').onclick=()=>dlgApr(s);
+})}
+
+function waText(s,cur,O){const ph=phName(s.ph_id),u=aUrl(s.id);
+ if(s.estado==='abierta')return `📋 *Aprobación pendiente – ${ph}*\n*${s.titulo}*${s.ronda>1?' (nuevas cotizaciones, ronda '+s.ronda+')':''}\n\n${cur.map(o=>`${o.letra}) ${o.proveedor}${o.monto!=null?' – '+money(o.monto):''}`).join('\n')}\n\nSe aprueba con 3 votos. Plazo: ${fDT(s.vence)}\nVer cotizaciones y votar: ${u}`;
+ const g=(O||[]).find(o=>o.id==s.opcion_ganadora);
+ return `📋 *${ph} – ${s.titulo}*\nResultado: *${(AE[s.estado]||[s.estado])[0]}*${g?`\nOpción ${g.letra}: ${g.proveedor}${g.monto!=null?' – '+money(g.monto):''}`:''}\nDetalle: ${u}`}
+
+async function shareAfter(id){try{const {data:s}=await sb.from('solicitudes').select('*').eq('id',id).single();const {data:O}=await sb.from('opciones').select('*').eq('solicitud_id',id).order('letra');
+ const cur=(O||[]).filter(o=>o.ronda===s.ronda);
+ openDlg(`<h3>✅ Enviada a la Junta</h3><p>Los miembros de la Junta reciben el aviso por correo. ¿Quieres avisarles también por WhatsApp (por ejemplo, en el chat de la Junta)?</p>
+ <textarea id="wtx" rows="9" readonly>${esc(waText(s,cur,O))}</textarea><div class="flt" style="margin-top:10px;justify-content:flex-end"><button id="wcl">Cerrar</button><button class="p" id="wgo">💬 Abrir WhatsApp</button></div>`);
+ $('#wcl').onclick=closeDlg;$('#wgo').onclick=()=>{window.open('https://wa.me/?text='+encodeURIComponent($('#wtx').value),'_blank');closeDlg()}}catch(e){}}
+
+async function verComparativo(s){const box=$('#acmp');box.innerHTML='<p class="mut">Cargando…</p>';
+ try{const u=await signed(s.comparativo_path);
+  if(/\.pdf$/i.test(s.comparativo_path)){box.innerHTML=`<iframe src="${esc(u)}" style="width:100%;height:70vh;border:1px solid var(--bd);border-radius:6px"></iframe>`;return}
+  const buf=await (await fetch(u)).arrayBuffer(),wb=XLSX.read(buf,{type:'array',cellDates:true});
+  box.innerHTML=wb.SheetNames.slice(0,4).map(n=>{const A=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:false,defval:''}).filter(r=>r.some(c=>sp(c)!==''));
+   const w=Math.min(Math.max(0,...A.map(r=>r.length)),20);
+   return `${wb.SheetNames.length>1?`<div class="sm" style="margin:8px 0 4px"><b>${esc(n)}</b></div>`:''}<table>${A.slice(0,80).map((r,i)=>`<tr>${Array.from({length:w},(_,j)=>{const c=r[j]??'';const t=i===0?'th':'td';return `<${t}${/^[\s$B\/.\-]*[\d,]+(\.\d+)?%?$/.test(String(c))?' class="n"':''}>${esc(c)}</${t}>`}).join('')}</tr>`).join('')}</table>${A.length>80?'<p class="sm">Se muestran las primeras 80 filas. Descarga el archivo para verlo completo.</p>':''}`}).join('')||'<p class="mut">El archivo está vacío.</p>'}
+ catch(e){box.innerHTML=`<p class="r">No se pudo mostrar el archivo: ${esc(e.message)}. Usa "Descargar".</p>`}}
+
+function optRow(i){return `<div class="optrow card" style="padding:8px;margin:8px 0"><div class="flt" style="justify-content:space-between"><b>Opción ${LET[i]}</b><button type="button" class="lnk orm">Quitar</button></div>
+ <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"><label>Proveedor<input class="opv" placeholder="Nombre del proveedor"></label><label>Monto (B/.)<input class="omo" type="number" step="0.01" min="0" placeholder="0.00"></label></div>
+ <label>Detalle (opcional)<input class="ode" placeholder="Garantía, tiempo de entrega, condiciones…"></label><label>Cotización en PDF<input class="opf" type="file" accept="application/pdf,.pdf,image/*"></label></div>`}
+
+function dlgApr(re){const nueva=!re;
+ openDlg(`<h3>${nueva?'Nueva solicitud de aprobación':'Reabrir con nuevas cotizaciones (ronda '+(re.ronda+1)+')'}</h3>
+ ${nueva?`<label>PH<select id="nph">${PHS.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}<option value="_new">+ Crear nueva PH…</option></select></label>
+  <div id="nphw" class="${PHS.length?'hid':''}"><label>Nombre de la nueva PH<input id="nphn" placeholder="Ej.: PH Terrace Park"></label></div>
+  <label>Título<input id="nti" placeholder="Ej.: Reemplazo de bomba de agua potable"></label>
+  <label>Descripción (opcional)<textarea id="nde" rows="3" placeholder="Qué se necesita y por qué"></textarea></label>`:`<p class="mut">${esc(phName(re.ph_id))} · ${esc(re.titulo)}</p>`}
+ <label>Cuadro comparativo (Excel o PDF${nueva?', opcional':', opcional: si no subes uno nuevo se mantiene el anterior'})<input id="ncm" type="file" accept=".xlsx,.xls,.csv,.pdf"></label>
+ <div id="nops"></div><button type="button" id="nadd">+ Agregar opción</button>
+ <p id="nmsg" class="mut"></p>
+ <div class="flt" style="margin-top:10px;justify-content:flex-end"><button id="ncl">Cancelar</button>${nueva?'<button id="nbor">Guardar como borrador</button>':''}<button class="p" id="nok">${nueva?'Guardar y enviar a la Junta':'Reabrir y enviar a la Junta'}</button></div>`);
+ const ops=$('#nops'),relabel=()=>[...ops.querySelectorAll('.optrow b')].forEach((b,i)=>b.textContent='Opción '+LET[i]);
+ const add=()=>{if(ops.children.length>=LET.length)return;ops.insertAdjacentHTML('beforeend',optRow(ops.children.length));relabel()};
+ add();add();$('#nadd').onclick=add;
+ ops.onclick=e=>{if(e.target.classList.contains('orm')){if(ops.children.length<=1)return msg('Debe haber al menos una opción.');e.target.closest('.optrow').remove();relabel()}};
+ if(nueva){$('#nph').onchange=()=>$('#nphw').classList.toggle('hid',$('#nph').value!=='_new');if(!PHS.length)$('#nph').value='_new'}
+ $('#ncl').onclick=closeDlg;
+ const save=async publicar=>{const say=t=>$('#nmsg').textContent=t;
+  const rows=[...ops.querySelectorAll('.optrow')].map(r=>({proveedor:sp(r.querySelector('.opv').value),monto:r.querySelector('.omo').value===''?null:+r.querySelector('.omo').value,detalle:sp(r.querySelector('.ode').value)||null,file:r.querySelector('.opf').files[0]})).filter(o=>o.proveedor||o.file);
+  if(nueva&&!sp($('#nti').value))return say('Escribe el título de la solicitud.');
+  if(!rows.length)return say('Agrega al menos una opción con el nombre del proveedor.');
+  if(rows.some(o=>!o.proveedor))return say('Cada opción debe tener el nombre del proveedor.');
+  const big=[$('#ncm').files[0],...rows.map(o=>o.file)].find(f=>f&&f.size>20*1024*1024);if(big)return say(`El archivo "${big.name}" pesa más de 20 MB.`);
+  $$('#dlgc button').forEach(b=>b.disabled=true);let sid=re?re.id:null;
+  try{let ph=re?re.ph_id:$('#nph').value;
+   if(ph==='_new'){const n=sp($('#nphn').value);if(!n)throw new Error('Escribe el nombre de la nueva PH.');say('Creando la PH…');
+    const {data:np,error}=await sb.from('phs').insert({nombre:n}).select().single();if(error)throw error;PHS.push(np);PHS.sort((a,b)=>a.nombre.localeCompare(b.nombre));ph=np.id}
+   ph=+ph;
+   if(nueva){say('Guardando la solicitud…');const {data:ns,error}=await sb.from('solicitudes').insert({ph_id:ph,titulo:sp($('#nti').value),descripcion:$('#nde').value.trim()||null}).select().single();if(error)throw error;sid=ns.id}
+   const cf=$('#ncm').files[0];if(cf){say('Subiendo el cuadro comparativo…');const p=await upFile(ph,sid,cf);const {error}=await sb.from('solicitudes').update({comparativo_path:p,comparativo_nombre:cf.name}).eq('id',sid);if(error)throw error}
+   const ronda=re?re.ronda+1:1;
+   for(let i=0;i<rows.length;i++){const o=rows[i];say(`Subiendo la opción ${LET[i]}…`);let pdf_path=null;if(o.file)pdf_path=await upFile(ph,sid,o.file);
+    const {error}=await sb.from('opciones').insert({solicitud_id:sid,ronda,letra:LET[i],proveedor:o.proveedor,monto:o.monto,detalle:o.detalle,pdf_path,pdf_nombre:o.file?o.file.name:null});if(error)throw error}
+   if(re){say('Reabriendo…');const {error}=await sb.rpc('apr_reabrir',{sid});if(error)throw error}
+   else if(publicar){say('Enviando a la Junta…');const {error}=await sb.rpc('apr_publicar',{sid});if(error)throw error}
+   closeDlg();APR.sel=sid;msg(publicar||re?'Solicitud enviada a la Junta.':'Borrador guardado.');await vAprDet(sid);if(publicar||re)shareAfter(sid)}
+  catch(e){say('No se pudo completar: '+(e.message||e)+(sid&&nueva?' La solicitud quedó como borrador; puedes revisarla en la lista.':''));$$('#dlgc button').forEach(b=>b.disabled=false)}};
+ $('#nok').onclick=()=>save(true);if($('#nbor'))$('#nbor').onclick=()=>save(false);
+}
 
 /* ================= arranque ================= */
 async function start(){const {data:{session}}=await sb.auth.getSession();if(!session)return showLogin();enter(session.user)}
